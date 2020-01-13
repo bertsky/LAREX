@@ -44,6 +44,18 @@ class TextViewer {
 		}
 	}
 
+	displaySearch(doSearch) {
+		if(doSearch){
+			$('.hideTextView').removeClass('hide');
+			$('.displayTextView').addClass('hide');
+		} else {
+			this.root.addClass("hide");
+			$(".zoom_second").addClass("hide");
+			$('.hideTextView').addClass('hide');
+			$('.displayTextView').removeClass('hide');
+		}
+	}
+
 	/**
 	 * Check if the textviewer is currently opened.
 	 */
@@ -392,7 +404,7 @@ class TextViewer {
 
 	_createSearchObject(textline) {
 		console.log(textline);
-		const $textlineText =  $(`<input class='textline-text'></input>`);
+		const $textlineText =  $(`<input class='textline-search'></input>`);
 /*
 		// Fill with content
 		const hasPredict = 1 in textline.text;

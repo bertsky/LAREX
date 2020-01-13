@@ -1262,8 +1262,9 @@ function Controller(bookID, accessible_modes, canvasID, regionColors, colors, gl
 	/**
 	 * Toggle search mode
 	 */
-	this.displaySearchViewer = function(isSearch){
+	this.displaySearchViewer = function (isSearch){
 	    _textViewer.isSearch = isSearch;
+	    _textViewer.displaySearch(isSearch);
 		this.displayTextViewer(true);
 	}
 	this.changeImageMode = function (imageMode) {
