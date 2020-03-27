@@ -68,6 +68,7 @@
 		$(document).ready(function() {
 			$(".button-collapse").sideNav();
 		    $('select').material_select();
+			$('.modal').modal();
 		});
 		</script>
 
@@ -76,6 +77,7 @@
 	</b:head>
 
 	<body>
+		<t:batchModal/>
 		<div id="menu" class="grey lighten-4">
 			<div class="mainMenu">
 				<ul class="tabs">

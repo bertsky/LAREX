@@ -287,7 +287,7 @@ function Controller(bookID, accessible_modes, canvasID, regionColors, colors, gl
 		});
 	}
 
-	this.requestSegmentation = function (allowLoadLocal) {
+	this.requestSegmentation = function (allowLoadLocal, batch) {
 		//Update setting parameters
 		_settings.parameters = _gui.getParameters();
 
@@ -304,10 +304,29 @@ function Controller(bookID, accessible_modes, canvasID, regionColors, colors, gl
 				activesettings.fixedGeometry.cuts = JSON.parse(JSON.stringify(_fixedGeometry[_currentPage].cuts));
 		}
 
-		_communicator.segmentPage(activesettings, _currentPage, allowLoadLocal).done((result) => {
-			this._setPage(_currentPage, result);
-			this.displayPage(_currentPage);
-		});
+		if(!batch){
+			_communicator.segmentPage(activesettings, _currentPage, allowLoadLocal).done((result) => {
+				this._setPage(_currentPage, result);
+				this.displayPage(_currentPage);
+			});
+		}else{
+			let selected_pages = $('.batchPageCheck:checkbox:checked').map(function(){
+				return $(this).data("page");
+			});
+			let save_pages = $("#batchSaveSegmentation").is(":checked");
+			let $controller = this;
+			for(let i=0; i < selected_pages.length; i++ ){
+				let _page = selected_pages[i];
+				_communicator.segmentPage(activesettings, _page, allowLoadLocal).done((result) => {
+					$controller._setPage(_page, result);
+					$controller.displayPage(_page);
+					if(save_pages){
+						$controller.exportPageXML(_page);
+					}
+					console.log(_page);
+				});
+			}
+		}
 	}
 
 	this._requestEmptySegmentation = function () {
@@ -437,20 +456,25 @@ function Controller(bookID, accessible_modes, canvasID, regionColors, colors, gl
 		return _mode;
 	}
 
-	this.exportPageXML = function () {
+	this.exportPageXML = function (page) {
+		let _page = _currentPage;
+		if(page){
+			_page=page;
+		}
+
 		_gui.setExportingInProgress(true);
 
-		_communicator.exportSegmentation(_segmentation[_currentPage], _book.id, _gui.getPageXMLVersion()).done((data) => {
+		_communicator.exportSegmentation(_segmentation[_page], _book.id, _gui.getPageXMLVersion()).done((data) => {
 			// Set export finished
-			_savedPages.push(_currentPage);
+			_savedPages.push(_page);
 			_gui.setExportingInProgress(false);
-			_gui.addPageStatus(_currentPage,PageStatus.SESSIONSAVED);
+			_gui.addPageStatus(_page,PageStatus.SESSIONSAVED);
 
 			// Download
 			if (globalSettings.downloadPage) {
 				var a = window.document.createElement('a');
 				a.href = window.URL.createObjectURL(new Blob([new XMLSerializer().serializeToString(data)], { type: "text/xml;charset=utf-8" }));
-				const fileName = _book.pages[_currentPage].name;
+				const fileName = _book.pages[_page].name;
 				a.download = _book.name + "_" + fileName + ".xml";
 
 				// Append anchor to body.
@@ -1593,5 +1617,9 @@ function Controller(bookID, accessible_modes, canvasID, regionColors, colors, gl
 	}
 	this.getCurrentSettings = function(){
 		return _settings[_currentPage];
+	}
+
+	this.openBatchSegmentModal = function(){
+		$("#batchSegmentModal").modal("open");
 	}
 }

@@ -415,4 +415,18 @@ function GuiInput(navigationController, controller, gui, textViewer, selector) {
 		_textViewer.resizeTextline(id)
 		_textViewer.saveTextLine(id,false);
 	}).trigger('input');
+
+	/**
+	 * Batch Segmentation Modal
+	 */
+	$("#selectAllBatch").click(function () {
+		$('.batchPageCheck:checkbox').not(this).prop('checked', this.checked);
+	});
+
+	$(".doBatchSegment").click(function (){
+		_controller.requestSegmentation(false, true);
+		$(".modal").modal("close");
+	});
+
+
 }

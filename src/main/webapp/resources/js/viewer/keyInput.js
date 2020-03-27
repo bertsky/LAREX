@@ -111,7 +111,15 @@ function KeyInput(_navigationController, _controller, _gui, _textViewer, _select
 							validKey = true;
 						} else {
 							if(mode === Mode.SEGMENT){
-								_controller.requestSegmentation()
+								_controller.requestSegmentation();
+								validKey = true;
+							}
+						}
+						break;
+					case 66: // B
+						if(event.ctrlKey){
+							if(mode === Mode.SEGMENT){
+								_controller.openBatchSegmentModal();
 								validKey = true;
 							}
 						}
