@@ -98,7 +98,9 @@ public class PageXMLWriter {
 			// Check for TextRegion
 			if (regionType.getName().equals(RegionType.TextRegion.getName())) {
 				final TextRegion textRegion = ((TextRegion) region);
-				textRegion.setTextType(TypeConverter.subTypeToString(type.getSubtype()));
+                                if (type.getSubtype() != null) {
+                                    textRegion.setTextType(TypeConverter.subTypeToString(type.getSubtype()));
+                                }
 
 				// Add TextLines if existing
 				if(regionSegment.getTextlines() != null) {
