@@ -150,7 +150,9 @@ public class PageXMLWriter {
 		xmlReadingOrder.getRoot().setOrdered(true);
 		List<String> readingOrder = result.getReadingOrder();
 		for (String regionID : readingOrder) {
+                    if (idMap.get(regionID) != null) {
 			xmlReadingOrder.getRoot().addRegionRef(idMap.get(regionID).toString());
+                    }
 		}
 
 		// Write as Document
